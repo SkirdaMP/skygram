@@ -45,45 +45,46 @@ class CommentsModel(BaseModel):
 
 class BaseJsonWorker:
     """
-    Base class for read and write data from/to json file. 
+    Base class for read and write data from/to json file.
     """
     def __init__(self, path_to_json: str):
         self.data_path = path_to_json
-        with open(self.data_path, encoding="utf-8") as f:
-            self.__data_from_json = json.load(f)
-    
+
     @property
-    def data_from_json(self):
-        return self.__data_from_json
-    
+    def raw_json_data(self) -> List[Dict]:
+        with open(self.data_path) as f:
+            return json.load(f)
+
     def insert_into_json(self, data):
-        self.__data_from_json = data
+        json_data = self.raw_json_data
+        json_data.append(data)
         with open(self.data_path, "w", encoding="utf-8") as f:
-            json.dump(self.__data_from_json, f, ensure_ascii=False)
+            json.dump(json_data, f, ensure_ascii=False)
 
 
 class PostsJsonWorker(BaseJsonWorker):
     """
     Class for work with posts of user
     """
-    def insert_into_json(self, data: List[Dict]):
+    def insert_into_json(self, data: Dict):
         try:
-            PostsModel(posts=data)
+            Post(**data)
         except ValidationError as e:
             print(e.json())
-            return
+            return False
         super().insert_into_json(data)
-        
+        return True
 
 
 class CommentsJsonWorker(BaseJsonWorker):
     """
     Class for work with comments of user
     """
-    def insert_into_json(self, data: List[Dict]):
+    def insert_into_json(self, data: Dict):
         try:
-            CommentsModel(comments=data)
+            Comment(**data)
         except ValidationError as e:
             print(e.json())
-            return
+            return False
         super().insert_into_json(data)
+        return True
