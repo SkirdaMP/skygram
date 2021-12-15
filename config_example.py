@@ -1,8 +1,9 @@
+# must renamed to config.py
 import os
 
 
 class BaseConfig:
-    SECRET_KEY = os.getenv("SECRET_KEY")
+    SECRET_KEY = "secret_key"
     DATA_PATH = os.getenv("DATA_PATH")
 
 

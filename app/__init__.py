@@ -1,11 +1,11 @@
+import os
 from flask import Flask
 
-from config import DevelopmentConfig
 
-
-def create_app(config_object=DevelopmentConfig):
+def create_app():
     flask_app = Flask(__name__)
-    flask_app.config.from_object(config_object)
+    app_settings = os.getenv("APP_SETTINGS")
+    flask_app.config.from_object(app_settings)
 
     with flask_app.app_context():
         from app.views import skygram_blueprint
