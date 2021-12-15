@@ -2,3 +2,4 @@ Pipfile
 Pipfile.lock
 config.py
 Dockerfile.prod
+.vscode
